@@ -18,14 +18,20 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private LayerMask groundMask;
     [SerializeField] private float gravity;
 
+    [SerializeField] private float jumpHeight;
+
     // References
 
     private CharacterController controller;
+
+    private Animator anim;
+
 
     private void Start()
     {
         controller = GetComponent<CharacterController>(); // goes through COMPONENTS in gameobject lookng for character controller
 
+        anim = GetComponentInChildren<Animator>(); // goes through components in children of object
     }
 
     private void Update()
@@ -46,7 +52,9 @@ public class PlayerMovement : MonoBehaviour
         // move forward / backward on Z axis using Vertical input from Input Manager
         float moveZ = Input.GetAxis("Vertical");
 
-        moveDirection = new Vector3(0, 0, moveZ);
+        moveDirection = new Vector3(0, 0, moveZ); // move forward/back based on key input
+        moveDirection = transform.TransformDirection(moveDirection); // change forward to be direction player is facing (vs global). Facing direciton transformed in camera controller.
+
 
         // set moveDirection value to be equal to itself * walk/runSpeed bc w/o too slow
         //moveDirection *= walkSpeed; test code
@@ -72,6 +80,11 @@ public class PlayerMovement : MonoBehaviour
             }
 
             moveDirection *= moveSpeed;
+
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                Jump();
+            }
         }
 
         // check moveDirection & left shift press to determine moveSpeed level
@@ -104,17 +117,25 @@ public class PlayerMovement : MonoBehaviour
 
     private void Idle()
     {
-            
+        anim.SetFloat("Speed", 0);
     }
 
     private void Walk()
     {
         moveSpeed = walkSpeed;
+
+        anim.SetFloat("Speed", 0.5f);
     }
 
     private void Run()
     {
         moveSpeed = runSpeed;
+
+        anim.SetFloat("Speed", 1f);
+    }
+    private void Jump()
+    {
+        velocity.y = Mathf.Sqrt(jumpHeight * -2 * gravity);
     }
 
 }
