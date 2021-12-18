@@ -37,6 +37,11 @@ public class PlayerMovement : MonoBehaviour
     private void Update()
     {
         Move();
+
+        if (Input.GetKeyDown(KeyCode.Mouse0))
+        {
+            Attack();
+        }
     }
 
     private void Move()
@@ -117,25 +122,31 @@ public class PlayerMovement : MonoBehaviour
 
     private void Idle()
     {
-        anim.SetFloat("Speed", 0);
+        anim.SetFloat("Speed", 0, 0.1f, Time.deltaTime);
     }
 
     private void Walk()
     {
         moveSpeed = walkSpeed;
 
-        anim.SetFloat("Speed", 0.5f);
+        anim.SetFloat("Speed", 0.5f, 0.1f, Time.deltaTime);
     }
 
     private void Run()
     {
         moveSpeed = runSpeed;
 
-        anim.SetFloat("Speed", 1f);
+        anim.SetFloat("Speed", 1f, 0.1f, Time.deltaTime);
     }
     private void Jump()
     {
         velocity.y = Mathf.Sqrt(jumpHeight * -2 * gravity);
+
+        anim.SetTrigger("JumpTrigger");
     }
 
+    private void Attack()
+    {
+        anim.SetTrigger("Attack");
+    }
 }
