@@ -26,12 +26,26 @@ public class PlayerMovement : MonoBehaviour
 
     private Animator anim;
 
+    // Attack variables & references
+    private GameObject sword;
+    [SerializeField] private bool canAttack = true;
+    [SerializeField] private float attackCoolDown = 0.4f;
+
+    public bool isAttacking; // public to be used in other scripts
+
+    private AudioSource swordSwing;
+    [SerializeField] private AudioClip swordSwingClip;
+
+
 
     private void Start()
     {
         controller = GetComponent<CharacterController>(); // goes through COMPONENTS in gameobject lookng for character controller
 
         anim = GetComponentInChildren<Animator>(); // goes through components in children of object
+
+        // sword sound
+        swordSwing = GetComponent<AudioSource>();
     }
 
     private void Update()
@@ -40,7 +54,10 @@ public class PlayerMovement : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
-            Attack();
+            if (canAttack)
+            {
+                Attack();
+            }
         }
     }
 
@@ -147,6 +164,27 @@ public class PlayerMovement : MonoBehaviour
 
     private void Attack()
     {
-        anim.SetTrigger("Attack");
+        isAttacking = true;
+        canAttack = false; // cannot attack again on mouse click until made true - prevent spamming
+        anim.SetTrigger("Attack"); // animation attack
+
+        swordSwing.PlayOneShot(swordSwingClip);
+
+        StartCoroutine(ResetAttackCooldown());
+
+    }
+
+    IEnumerator ResetAttackCooldown()
+    {
+        StartCoroutine(ResetAttackBool());
+
+        yield return new WaitForSeconds(attackCoolDown); // variable set above - wait time
+        canAttack = true; // switch back to true to be able to attack again
+    }
+
+    IEnumerator ResetAttackBool()
+    {
+        yield return new WaitForSeconds(0.4f);
+        isAttacking = false;
     }
 }
