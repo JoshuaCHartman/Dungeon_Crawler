@@ -55869,7 +55869,7 @@ MonoBehaviour:
   _assetName: Dungeon_Hex_Floor_World_Maker
   _assetOpName: Sop/Dungeon_Hex_Floor_World_Maker
   _assetHelp: 
-  _assetID: 0
+  _assetID: -1
   _assetPath: Assets/Dungeon_Hex_Floor_World_Maker.hdalc
   _loadAssetFromMemory: 0
   _alwaysOverwriteOnLoad: 0
